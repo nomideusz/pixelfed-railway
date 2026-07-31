@@ -97,7 +97,7 @@
         },
         "APP_DOMAIN": {
           "isOptional": false,
-          "description": "Wired automatically. Don't change. Federation identities are tied to this domain \u2014 attach your custom domain BEFORE federating.",
+          "description": "Wired automatically. Don't change. Federation identities are tied to this domain — attach your custom domain BEFORE federating.",
           "defaultValue": "${{RAILWAY_PUBLIC_DOMAIN}}"
         },
         "ADMIN_DOMAIN": {
@@ -112,7 +112,7 @@
         },
         "TRUST_PROXIES": {
           "isOptional": false,
-          "description": "Don't change \u2014 Railway terminates TLS in front of the app.",
+          "description": "Don't change — Railway terminates TLS in front of the app.",
           "defaultValue": "*"
         },
         "OPEN_REGISTRATION": {
@@ -127,7 +127,7 @@
         },
         "PF_MAKE_ADMIN": {
           "isOptional": false,
-          "description": "After registering in the web UI, set this to your username and redeploy \u2014 that account becomes admin.",
+          "description": "After registering in the web UI, set this to your username and redeploy — that account becomes admin.",
           "defaultValue": ""
         },
         "DB_CONNECTION": {
@@ -248,7 +248,7 @@
       },
       "networking": {
         "serviceDomains": {
-          "<hasDomain>": {
+          "<hasDomain>:80": {
             "port": 80
           }
         }
