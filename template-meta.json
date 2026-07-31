@@ -1,0 +1,8 @@
+{
+  "id": "8236b467-b612-4046-a2c2-1d47277abb09",
+  "code": "pixelfed",
+  "name": "Pixelfed | Fediverse Photo Sharing, Instagram Alternative",
+  "description": "Your own Instagram on the Fediverse — photos, albums, federation built in.",
+  "image": "https://raw.githubusercontent.com/pixelfed/pixelfed/dev/public/img/favicon.png",
+  "category": "Other"
+}

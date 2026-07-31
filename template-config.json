@@ -1,0 +1,263 @@
+{
+  "buckets": {},
+  "services": {
+    "975c8e9c-3f5b-4c3b-842d-b9965c2dd5ca": {
+      "icon": "https://raw.githubusercontent.com/docker-library/docs/master/redis/logo.png",
+      "name": "redis",
+      "deploy": {
+        "startCommand": null,
+        "healthcheckPath": null,
+        "restartPolicyType": "ON_FAILURE",
+        "restartPolicyMaxRetries": 10
+      },
+      "source": {
+        "image": "redis:7-alpine"
+      },
+      "variables": {},
+      "volumeMounts": {
+        "975c8e9c-3f5b-4c3b-842d-b9965c2dd5ca": {
+          "mountPath": "/data"
+        }
+      }
+    },
+    "e3f870a4-826e-4811-b36a-a9e264339bf9": {
+      "icon": "https://www.mysql.com/common/logos/logo-mysql-170x115.png",
+      "name": "mysql",
+      "deploy": {
+        "startCommand": "docker-entrypoint.sh mysqld --datadir=/var/lib/mysql/data",
+        "healthcheckPath": null,
+        "restartPolicyType": "ON_FAILURE",
+        "restartPolicyMaxRetries": 10
+      },
+      "source": {
+        "image": "mysql:8"
+      },
+      "variables": {
+        "MYSQL_DATABASE": {
+          "isOptional": false,
+          "description": "Don't change.",
+          "defaultValue": "pixelfed"
+        },
+        "MYSQL_USER": {
+          "isOptional": false,
+          "description": "Don't change.",
+          "defaultValue": "pixelfed"
+        },
+        "MYSQL_PASSWORD": {
+          "isOptional": false,
+          "description": "Database password. Auto generated.",
+          "defaultValue": "${{secret(32)}}"
+        },
+        "MYSQL_RANDOM_ROOT_PASSWORD": {
+          "isOptional": false,
+          "description": "Don't change.",
+          "defaultValue": "1"
+        }
+      },
+      "volumeMounts": {
+        "e3f870a4-826e-4811-b36a-a9e264339bf9": {
+          "mountPath": "/var/lib/mysql"
+        }
+      }
+    },
+    "fb1747fb-6f8e-447a-8d8c-f5122129b522": {
+      "icon": "https://raw.githubusercontent.com/pixelfed/pixelfed/dev/public/img/favicon.png",
+      "name": "pixelfed",
+      "deploy": {
+        "startCommand": null,
+        "healthcheckPath": "/api/v1/instance",
+        "restartPolicyType": "ON_FAILURE",
+        "restartPolicyMaxRetries": 10,
+        "healthcheckTimeout": 600
+      },
+      "source": {
+        "repo": "https://github.com/nomideusz/pixelfed-railway",
+        "rootDirectory": null
+      },
+      "variables": {
+        "APP_NAME": {
+          "isOptional": false,
+          "description": "Instance name shown in the UI and metadata.",
+          "defaultValue": "Pixelfed"
+        },
+        "APP_ENV": {
+          "isOptional": false,
+          "description": "Don't change.",
+          "defaultValue": "production"
+        },
+        "APP_DEBUG": {
+          "isOptional": false,
+          "description": "Don't change.",
+          "defaultValue": "false"
+        },
+        "APP_URL": {
+          "isOptional": false,
+          "description": "Wired automatically. Don't change.",
+          "defaultValue": "https://${{RAILWAY_PUBLIC_DOMAIN}}"
+        },
+        "APP_DOMAIN": {
+          "isOptional": false,
+          "description": "Wired automatically. Don't change. Federation identities are tied to this domain \u2014 attach your custom domain BEFORE federating.",
+          "defaultValue": "${{RAILWAY_PUBLIC_DOMAIN}}"
+        },
+        "ADMIN_DOMAIN": {
+          "isOptional": false,
+          "description": "Wired automatically. Don't change.",
+          "defaultValue": "${{RAILWAY_PUBLIC_DOMAIN}}"
+        },
+        "SESSION_DOMAIN": {
+          "isOptional": false,
+          "description": "Wired automatically. Don't change.",
+          "defaultValue": "${{RAILWAY_PUBLIC_DOMAIN}}"
+        },
+        "TRUST_PROXIES": {
+          "isOptional": false,
+          "description": "Don't change \u2014 Railway terminates TLS in front of the app.",
+          "defaultValue": "*"
+        },
+        "OPEN_REGISTRATION": {
+          "isOptional": false,
+          "description": "Anyone can sign up. Set false after creating your account for a private instance.",
+          "defaultValue": "true"
+        },
+        "ENFORCE_EMAIL_VERIFICATION": {
+          "isOptional": false,
+          "description": "Keep false unless you configure a real mailer (MAIL_* vars).",
+          "defaultValue": "false"
+        },
+        "PF_MAKE_ADMIN": {
+          "isOptional": false,
+          "description": "After registering in the web UI, set this to your username and redeploy \u2014 that account becomes admin.",
+          "defaultValue": ""
+        },
+        "DB_CONNECTION": {
+          "isOptional": false,
+          "description": "Don't change.",
+          "defaultValue": "mysql"
+        },
+        "DB_HOST": {
+          "isOptional": false,
+          "description": "Wired automatically. Don't change.",
+          "defaultValue": "${{mysql.RAILWAY_PRIVATE_DOMAIN}}"
+        },
+        "DB_PORT": {
+          "isOptional": false,
+          "description": "Don't change.",
+          "defaultValue": "3306"
+        },
+        "DB_DATABASE": {
+          "isOptional": false,
+          "description": "Wired automatically. Don't change.",
+          "defaultValue": "${{mysql.MYSQL_DATABASE}}"
+        },
+        "DB_USERNAME": {
+          "isOptional": false,
+          "description": "Wired automatically. Don't change.",
+          "defaultValue": "${{mysql.MYSQL_USER}}"
+        },
+        "DB_PASSWORD": {
+          "isOptional": false,
+          "description": "Wired automatically. Don't change.",
+          "defaultValue": "${{mysql.MYSQL_PASSWORD}}"
+        },
+        "REDIS_CLIENT": {
+          "isOptional": false,
+          "description": "Don't change.",
+          "defaultValue": "phpredis"
+        },
+        "REDIS_HOST": {
+          "isOptional": false,
+          "description": "Wired automatically. Don't change.",
+          "defaultValue": "${{redis.RAILWAY_PRIVATE_DOMAIN}}"
+        },
+        "REDIS_PORT": {
+          "isOptional": false,
+          "description": "Don't change.",
+          "defaultValue": "6379"
+        },
+        "SESSION_DRIVER": {
+          "isOptional": false,
+          "description": "Don't change.",
+          "defaultValue": "database"
+        },
+        "CACHE_DRIVER": {
+          "isOptional": false,
+          "description": "Don't change.",
+          "defaultValue": "redis"
+        },
+        "QUEUE_DRIVER": {
+          "isOptional": false,
+          "description": "Don't change.",
+          "defaultValue": "redis"
+        },
+        "BROADCAST_DRIVER": {
+          "isOptional": false,
+          "description": "Don't change.",
+          "defaultValue": "log"
+        },
+        "LOG_CHANNEL": {
+          "isOptional": false,
+          "description": "Logs go to Railway's log view.",
+          "defaultValue": "stderr"
+        },
+        "HORIZON_PREFIX": {
+          "isOptional": false,
+          "description": "Don't change.",
+          "defaultValue": "horizon-"
+        },
+        "ACTIVITY_PUB": {
+          "isOptional": false,
+          "description": "ActivityPub federation with Mastodon & the Fediverse.",
+          "defaultValue": "true"
+        },
+        "AP_REMOTE_FOLLOW": {
+          "isOptional": false,
+          "description": "Allow remote follows from other Fediverse servers.",
+          "defaultValue": "true"
+        },
+        "OAUTH_ENABLED": {
+          "isOptional": false,
+          "description": "Required for mobile/third-party apps.",
+          "defaultValue": "true"
+        },
+        "ENABLE_CONFIG_CACHE": {
+          "isOptional": false,
+          "description": "Don't change.",
+          "defaultValue": "true"
+        },
+        "PF_MAX_USERS": {
+          "isOptional": false,
+          "description": "Maximum number of accounts on this instance.",
+          "defaultValue": "1000"
+        },
+        "MAX_PHOTO_SIZE": {
+          "isOptional": false,
+          "description": "Max photo/video size in KB.",
+          "defaultValue": "15000"
+        },
+        "MAIL_DRIVER": {
+          "isOptional": false,
+          "description": "Set to smtp (with MAIL_HOST/PORT/USERNAME/PASSWORD/ENCRYPTION/FROM_ADDRESS) for real emails.",
+          "defaultValue": "log"
+        },
+        "PORT": {
+          "isOptional": false,
+          "description": "Port for Railway healthcheck probing. Do not change.",
+          "defaultValue": "80"
+        }
+      },
+      "networking": {
+        "serviceDomains": {
+          "<hasDomain>": {
+            "port": 80
+          }
+        }
+      },
+      "volumeMounts": {
+        "fb1747fb-6f8e-447a-8d8c-f5122129b522": {
+          "mountPath": "/var/www/storage"
+        }
+      }
+    }
+  }
+}
