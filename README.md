@@ -4,6 +4,10 @@
 
 [Pixelfed](https://pixelfed.org/) is a free and open source photo sharing platform for the Fediverse — an ethical Instagram alternative. Chronological feeds, albums, stories, filters, discovery, and no ads or tracking. Thanks to ActivityPub federation your instance connects with Mastodon and the rest of the Fediverse out of the box.
 
+## Screenshots
+
+![Pixelfed profile with photo grid](https://raw.githubusercontent.com/nomideusz/pixelfed-railway/main/images/01.jpg)
+
 ## About Hosting Pixelfed
 
 This template runs the full Pixelfed stack in three Railway services: the Pixelfed app (nginx + PHP-FPM + the Horizon queue worker + the task scheduler combined in one container, based on the excellent [jippi/docker-pixelfed](https://jippi.github.io/docker-pixelfed/) images), MySQL 8, and Redis. First-boot setup is fully automatic — app key, migrations, OAuth keys, and the federation instance actor are generated on first deploy and persisted on the storage volume. Photos and videos live on the app service's volume at `/var/www/storage`.
