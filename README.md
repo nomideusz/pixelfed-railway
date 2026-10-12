@@ -1,6 +1,6 @@
 # Deploy and Host Pixelfed on Railway
 
-[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/new/template/pixelfed?utm_medium=integration&utm_source=button&utm_campaign=pixelfed)
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/new/template/pixelfed?referralCode=sLjDXb&utm_medium=integration&utm_source=button&utm_campaign=pixelfed)
 
 [Pixelfed](https://pixelfed.org/) is a free and open source photo sharing platform for the Fediverse — an ethical Instagram alternative. Chronological feeds, albums, stories, filters, discovery, and no ads or tracking. Thanks to ActivityPub federation your instance connects with Mastodon and the rest of the Fediverse out of the box.
 
