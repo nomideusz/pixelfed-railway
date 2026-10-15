@@ -1,4 +1,4 @@
-FROM ghcr.io/jippi/docker-pixelfed:v0.12.7-nginx-8.4-bookworm
+FROM ghcr.io/jippi/docker-pixelfed:v0.14.4-nginx-8.4-bookworm
 
 # Combined single-service image for Railway: nginx + php-fpm + horizon (queues)
 # + scheduler in one container sharing one storage volume — Railway volumes
@@ -6,6 +6,21 @@ FROM ghcr.io/jippi/docker-pixelfed:v0.12.7-nginx-8.4-bookworm
 # Files are overwritten (not deleted): Railway's layer flattening resurrects
 # whiteout'd files.
 ENV DOCKER_APP_PHP_VERSION=8.4
+
+# Horizon's default `auto` balancing keeps at least one ~90 MB PHP worker per
+# queue — Pixelfed has 15 — so the container idled at ~1.1 GB and failed on
+# small plans. Unbalanced, each of the 4 supervisors runs one worker that
+# drains its queues in priority order.
+# ponytail: 1 worker per pool; raise the *_MAX_PROCESSES vars for a busy instance.
+ENV HORIZON_BALANCE_STRATEGY=false \
+    HORIZON_MAX_PROCESSES=1 \
+    HORIZON_FANOUT_MAX_PROCESSES=1 \
+    HORIZON_MEDIA_MAX_PROCESSES=1 \
+    HORIZON_BACKGROUND_MAX_PROCESSES=1
+
+# Template updates bump the image; without this the new code runs against the
+# old schema until someone runs `artisan migrate` by hand.
+ENV DB_APPLY_NEW_MIGRATIONS_AUTOMATICALLY=1
 
 # nginx `worker_processes auto` counts host cores, not the container's CPU
 # quota: Railway Metal hosts show 48, so nginx forks 48 workers (~30 MB each,

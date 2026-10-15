@@ -44,6 +44,7 @@ Notes and limits:
 - Photo/video storage is bounded by the volume size (grow it in service settings). S3-compatible object storage is supported via Pixelfed's `PF_ENABLE_CLOUD=true` + `FILESYSTEM_CLOUD=s3` and the `AWS_*` variables.
 - Media processing (thumbnails, image optimization) runs on CPU via the bundled ffmpeg/imagick; large video uploads want more vCPU/RAM.
 - `MAX_PHOTO_SIZE` (default 15 MB) and related limits are plain variables on the pixelfed service.
+- Idle RAM is about 740 MB for the app and 680 MB for MySQL: fine on Trial (1 GB per service) and Hobby, too much for the 0.5 GB Free plan. The queue runs one worker per Horizon pool; on a busy instance raise `HORIZON_MAX_PROCESSES`, `HORIZON_FANOUT_MAX_PROCESSES`, `HORIZON_MEDIA_MAX_PROCESSES` and `HORIZON_BACKGROUND_MAX_PROCESSES` on the pixelfed service.
 
 ## Why Deploy Pixelfed on Railway?
 
