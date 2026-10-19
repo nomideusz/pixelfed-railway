@@ -6,7 +6,7 @@
 
 ## Screenshots
 
-![Pixelfed profile with photo grid](https://raw.githubusercontent.com/nomideusz/pixelfed-railway/main/images/01.jpg)
+![Pixelfed profile with photo grid](https://raw.githubusercontent.com/two-workspaces/pixelfed/main/images/01.jpg)
 
 ## About Hosting Pixelfed
 
@@ -27,7 +27,7 @@ This template runs the full Pixelfed stack in three Railway services: the Pixelf
 
 - [Pixelfed documentation](https://docs.pixelfed.org/)
 - [jippi/docker-pixelfed image documentation](https://jippi.github.io/docker-pixelfed/)
-- [Template source on GitHub](https://github.com/nomideusz/pixelfed-railway)
+- [Template source on GitHub](https://github.com/two-workspaces/pixelfed)
 
 ### Implementation Details
 
