@@ -51,7 +51,7 @@
       "icon": "https://www.mysql.com/common/logos/logo-mysql-170x115.png",
       "name": "mysql",
       "deploy": {
-        "startCommand": "docker-entrypoint.sh mysqld --datadir=/var/lib/mysql/data",
+        "startCommand": "docker-entrypoint.sh mysqld --datadir=/var/lib/mysql/data --performance-schema=OFF --skip-log-bin --innodb-buffer-pool-size=64M",
         "healthcheckPath": null,
         "restartPolicyType": "ON_FAILURE",
         "restartPolicyMaxRetries": 10

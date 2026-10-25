@@ -7,14 +7,17 @@ FROM ghcr.io/jippi/docker-pixelfed:v0.15.0-nginx-8.4-bookworm
 # whiteout'd files.
 ENV DOCKER_APP_PHP_VERSION=8.4
 
-# Horizon's default `auto` balancing keeps at least one ~90 MB PHP worker per
-# queue — Pixelfed has 15 — so the container idled at ~1.1 GB and failed on
-# small plans. Unbalanced, each of the 4 supervisors runs one worker that
-# drains its queues in priority order.
-# ponytail: 1 worker per pool; raise the *_MAX_PROCESSES vars for a busy instance.
+# Horizon runs a master, one supervisor per pool and the pool workers, each a
+# ~100 MB PHP process: 10+ processes (~1 GB) on Pixelfed 0.15's five pools, so
+# the app OOMs on the 0.5 GB Free plan. The Procfile runs one `queue:work` over
+# every Horizon queue in priority order instead, and the scheduler as a
+# `schedule:run` loop rather than a resident `schedule:work` process.
+# ponytail: one queue worker; set PF_HORIZON=1 on a busy instance to get the
+# full Horizon pools back (HORIZON_*_MAX_PROCESSES below then apply).
 ENV HORIZON_BALANCE_STRATEGY=false \
     HORIZON_MAX_PROCESSES=1 \
     HORIZON_FANOUT_MAX_PROCESSES=1 \
+    HORIZON_DELIVER_MAX_PROCESSES=1 \
     HORIZON_MEDIA_MAX_PROCESSES=1 \
     HORIZON_BACKGROUND_MAX_PROCESSES=1
 

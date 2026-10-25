@@ -10,7 +10,7 @@
 
 ## About Hosting Pixelfed
 
-This template runs the full Pixelfed stack in three Railway services: the Pixelfed app (nginx + PHP-FPM + the Horizon queue worker + the task scheduler combined in one container, based on the excellent [jippi/docker-pixelfed](https://jippi.github.io/docker-pixelfed/) images), MySQL 8, and Redis. First-boot setup is fully automatic — app key, migrations, OAuth keys, and the federation instance actor are generated on first deploy and persisted on the storage volume. Photos and videos live on the app service's volume at `/var/www/storage`.
+This template runs the full Pixelfed stack in three Railway services: the Pixelfed app (nginx + PHP-FPM + a queue worker + the task scheduler combined in one container, based on the excellent [jippi/docker-pixelfed](https://jippi.github.io/docker-pixelfed/) images), MySQL 8, and Redis. First-boot setup is fully automatic — app key, migrations, OAuth keys, and the federation instance actor are generated on first deploy and persisted on the storage volume. Photos and videos live on the app service's volume at `/var/www/storage`.
 
 ## Common Use Cases
 
@@ -44,7 +44,7 @@ Notes and limits:
 - Photo/video storage is bounded by the volume size (grow it in service settings). S3-compatible object storage is supported via Pixelfed's `PF_ENABLE_CLOUD=true` + `FILESYSTEM_CLOUD=s3` and the `AWS_*` variables.
 - Media processing (thumbnails, image optimization) runs on CPU via the bundled ffmpeg/imagick; large video uploads want more vCPU/RAM.
 - `MAX_PHOTO_SIZE` (default 15 MB) and related limits are plain variables on the pixelfed service.
-- Idle RAM is about 740 MB for the app and 680 MB for MySQL: fine on Trial (1 GB per service) and Hobby, too much for the 0.5 GB Free plan. The queue runs one worker per Horizon pool; on a busy instance raise `HORIZON_MAX_PROCESSES`, `HORIZON_FANOUT_MAX_PROCESSES`, `HORIZON_MEDIA_MAX_PROCESSES` and `HORIZON_BACKGROUND_MAX_PROCESSES` on the pixelfed service.
+- Idle RAM is about 160 MB for the app and under 0.5 GB for MySQL, so the stack fits the Free plan (0.5 GB per service). One queue worker drains every queue in priority order; on a busy instance set `PF_HORIZON=1` on the pixelfed service to run the full Horizon pools instead (then tune `HORIZON_*_MAX_PROCESSES`), and use a Trial/Hobby plan for the extra RAM.
 
 ## Why Deploy Pixelfed on Railway?
 
