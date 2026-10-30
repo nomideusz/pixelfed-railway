@@ -1,321 +1,326 @@
 {
-  "buckets": {},
-  "services": {
+ "buckets": {},
+ "services": {
+  "975c8e9c-3f5b-4c3b-842d-b9965c2dd5ca": {
+   "icon": "https://raw.githubusercontent.com/docker-library/docs/master/redis/logo.png",
+   "name": "redis",
+   "deploy": {
+    "startCommand": null,
+    "healthcheckPath": null,
+    "restartPolicyType": "ON_FAILURE",
+    "restartPolicyMaxRetries": 10
+   },
+   "source": {
+    "image": "redis:7-alpine"
+   },
+   "variables": {},
+   "volumeMounts": {
     "975c8e9c-3f5b-4c3b-842d-b9965c2dd5ca": {
-      "icon": "https://raw.githubusercontent.com/docker-library/docs/master/redis/logo.png",
-      "name": "redis",
-      "deploy": {
-        "startCommand": null,
-        "healthcheckPath": null,
-        "restartPolicyType": "ON_FAILURE",
-        "restartPolicyMaxRetries": 10
-      },
-      "source": {
-        "image": "redis:7-alpine"
-      },
-      "variables": {},
-      "volumeMounts": {
-        "975c8e9c-3f5b-4c3b-842d-b9965c2dd5ca": {
-          "mountPath": "/data"
-        }
-      },
-      "haTemplateCode": "redis-ha",
-      "haConversionConfig": {
-        "edge": {
-          "label": "Reverse Proxies",
-          "options": [
-            1,
-            2
-          ],
-          "nodeLabel": "HAProxy",
-          "description": "HAProxy instances routing writes to the primary",
-          "defaultValue": 2
-        },
-        "replica": {
-          "label": "Redis Replicas",
-          "options": [
-            2,
-            3,
-            4,
-            5
-          ],
-          "nodeLabel": "Redis",
-          "description": "Nodes running Redis + colocated Sentinel",
-          "defaultValue": 2
-        },
-        "internal": null,
-        "description": "This will convert your Redis instance to an HA cluster with Sentinel failover and HAProxy routing to the primary."
-      }
-    },
-    "e3f870a4-826e-4811-b36a-a9e264339bf9": {
-      "icon": "https://www.mysql.com/common/logos/logo-mysql-170x115.png",
-      "name": "mysql",
-      "deploy": {
-        "startCommand": "docker-entrypoint.sh mysqld --datadir=/var/lib/mysql/data --performance-schema=OFF --skip-log-bin --innodb-buffer-pool-size=64M",
-        "healthcheckPath": null,
-        "restartPolicyType": "ON_FAILURE",
-        "restartPolicyMaxRetries": 10
-      },
-      "source": {
-        "image": "mysql:8"
-      },
-      "variables": {
-        "MYSQL_USER": {
-          "isOptional": false,
-          "description": "Don't change.",
-          "defaultValue": "pixelfed"
-        },
-        "MYSQL_DATABASE": {
-          "isOptional": false,
-          "description": "Don't change.",
-          "defaultValue": "pixelfed"
-        },
-        "MYSQL_PASSWORD": {
-          "isOptional": false,
-          "description": "Database password. Auto generated.",
-          "defaultValue": "${{secret(32)}}"
-        },
-        "MYSQL_RANDOM_ROOT_PASSWORD": {
-          "isOptional": false,
-          "description": "Don't change.",
-          "defaultValue": "1"
-        }
-      },
-      "volumeMounts": {
-        "e3f870a4-826e-4811-b36a-a9e264339bf9": {
-          "mountPath": "/var/lib/mysql"
-        }
-      },
-      "haTemplateCode": "mysql-ha",
-      "haConversionConfig": {
-        "edge": {
-          "label": "Reverse Proxies",
-          "options": [
-            1,
-            2
-          ],
-          "nodeLabel": "HAProxy",
-          "description": "HAProxy instances routing writes to the primary",
-          "defaultValue": 2
-        },
-        "replica": {
-          "label": "MySQL Replicas",
-          "options": [
-            2,
-            4,
-            6,
-            8
-          ],
-          "nodeLabel": "MySQL",
-          "description": "Requires odd count for quorum",
-          "defaultValue": 2
-        },
-        "internal": null,
-        "description": "This will convert your MySQL instance to an HA cluster with Group Replication failover and HAProxy routing to the primary.",
-        "supportedImageMajorVersions": [
-          8,
-          9
-        ]
-      }
-    },
-    "fb1747fb-6f8e-447a-8d8c-f5122129b522": {
-      "icon": "https://raw.githubusercontent.com/pixelfed/pixelfed/dev/public/img/favicon.png",
-      "name": "pixelfed",
-      "deploy": {
-        "startCommand": null,
-        "healthcheckPath": "/api/v1/instance",
-        "restartPolicyType": "ON_FAILURE",
-        "healthcheckTimeout": 600,
-        "restartPolicyMaxRetries": 10
-      },
-      "source": {
-        "repo": "https://github.com/two-workspaces/pixelfed",
-        "rootDirectory": null
-      },
-      "variables": {
-        "PORT": {
-          "isOptional": false,
-          "description": "Port for Railway healthcheck probing. Do not change.",
-          "defaultValue": "80"
-        },
-        "APP_ENV": {
-          "isOptional": false,
-          "description": "Don't change.",
-          "defaultValue": "production"
-        },
-        "APP_URL": {
-          "isOptional": false,
-          "description": "Wired automatically. Don't change.",
-          "defaultValue": "https://${{RAILWAY_PUBLIC_DOMAIN}}"
-        },
-        "DB_HOST": {
-          "isOptional": false,
-          "description": "Wired automatically. Don't change.",
-          "defaultValue": "${{mysql.RAILWAY_PRIVATE_DOMAIN}}"
-        },
-        "DB_PORT": {
-          "isOptional": false,
-          "description": "Don't change.",
-          "defaultValue": "3306"
-        },
-        "APP_NAME": {
-          "isOptional": false,
-          "description": "Instance name shown in the UI and metadata.",
-          "defaultValue": "Pixelfed"
-        },
-        "APP_DEBUG": {
-          "isOptional": false,
-          "description": "Don't change.",
-          "defaultValue": "false"
-        },
-        "APP_DOMAIN": {
-          "isOptional": false,
-          "description": "Wired automatically. Don't change. Federation identities are tied to this domain \u2014 attach your custom domain BEFORE federating.",
-          "defaultValue": "${{RAILWAY_PUBLIC_DOMAIN}}"
-        },
-        "REDIS_HOST": {
-          "isOptional": false,
-          "description": "Wired automatically. Don't change.",
-          "defaultValue": "${{redis.RAILWAY_PRIVATE_DOMAIN}}"
-        },
-        "REDIS_PORT": {
-          "isOptional": false,
-          "description": "Don't change.",
-          "defaultValue": "6379"
-        },
-        "DB_DATABASE": {
-          "isOptional": false,
-          "description": "Wired automatically. Don't change.",
-          "defaultValue": "${{mysql.MYSQL_DATABASE}}"
-        },
-        "DB_PASSWORD": {
-          "isOptional": false,
-          "description": "Wired automatically. Don't change.",
-          "defaultValue": "${{mysql.MYSQL_PASSWORD}}"
-        },
-        "DB_USERNAME": {
-          "isOptional": false,
-          "description": "Wired automatically. Don't change.",
-          "defaultValue": "${{mysql.MYSQL_USER}}"
-        },
-        "LOG_CHANNEL": {
-          "isOptional": false,
-          "description": "Logs go to Railway's log view.",
-          "defaultValue": "stderr"
-        },
-        "MAIL_DRIVER": {
-          "isOptional": false,
-          "description": "Set to smtp (with MAIL_HOST/PORT/USERNAME/PASSWORD/ENCRYPTION/FROM_ADDRESS) for real emails.",
-          "defaultValue": "log"
-        },
-        "ACTIVITY_PUB": {
-          "isOptional": false,
-          "description": "ActivityPub federation with Mastodon & the Fediverse.",
-          "defaultValue": "true"
-        },
-        "ADMIN_DOMAIN": {
-          "isOptional": false,
-          "description": "Wired automatically. Don't change.",
-          "defaultValue": "${{RAILWAY_PUBLIC_DOMAIN}}"
-        },
-        "CACHE_DRIVER": {
-          "isOptional": false,
-          "description": "Don't change.",
-          "defaultValue": "redis"
-        },
-        "PF_MAX_USERS": {
-          "isOptional": false,
-          "description": "Maximum number of accounts on this instance.",
-          "defaultValue": "1000"
-        },
-        "QUEUE_DRIVER": {
-          "isOptional": false,
-          "description": "Don't change.",
-          "defaultValue": "redis"
-        },
-        "REDIS_CLIENT": {
-          "isOptional": false,
-          "description": "Don't change.",
-          "defaultValue": "phpredis"
-        },
-        "DB_CONNECTION": {
-          "isOptional": false,
-          "description": "Don't change.",
-          "defaultValue": "mysql"
-        },
-        "OAUTH_ENABLED": {
-          "isOptional": false,
-          "description": "Required for mobile/third-party apps.",
-          "defaultValue": "true"
-        },
-        "PF_MAKE_ADMIN": {
-          "isOptional": false,
-          "description": "After registering in the web UI, set this to your username and redeploy \u2014 that account becomes admin.",
-          "defaultValue": ""
-        },
-        "TRUST_PROXIES": {
-          "isOptional": false,
-          "description": "Don't change \u2014 Railway terminates TLS in front of the app.",
-          "defaultValue": "*"
-        },
-        "HORIZON_PREFIX": {
-          "isOptional": false,
-          "description": "Don't change.",
-          "defaultValue": "horizon-"
-        },
-        "MAX_PHOTO_SIZE": {
-          "isOptional": false,
-          "description": "Max photo/video size in KB.",
-          "defaultValue": "15000"
-        },
-        "SESSION_DOMAIN": {
-          "isOptional": false,
-          "description": "Wired automatically. Don't change.",
-          "defaultValue": "${{RAILWAY_PUBLIC_DOMAIN}}"
-        },
-        "SESSION_DRIVER": {
-          "isOptional": false,
-          "description": "Don't change.",
-          "defaultValue": "database"
-        },
-        "AP_REMOTE_FOLLOW": {
-          "isOptional": false,
-          "description": "Allow remote follows from other Fediverse servers.",
-          "defaultValue": "true"
-        },
-        "BROADCAST_DRIVER": {
-          "isOptional": false,
-          "description": "Don't change.",
-          "defaultValue": "log"
-        },
-        "OPEN_REGISTRATION": {
-          "isOptional": false,
-          "description": "Anyone can sign up. Set false after creating your account for a private instance.",
-          "defaultValue": "true"
-        },
-        "ENABLE_CONFIG_CACHE": {
-          "isOptional": false,
-          "description": "Don't change.",
-          "defaultValue": "true"
-        },
-        "ENFORCE_EMAIL_VERIFICATION": {
-          "isOptional": false,
-          "description": "Keep false unless you configure a real mailer (MAIL_* vars).",
-          "defaultValue": "false"
-        }
-      },
-      "networking": {
-        "serviceDomains": {
-          "<hasDomain>:80": {
-            "port": 80
-          }
-        }
-      },
-      "volumeMounts": {
-        "fb1747fb-6f8e-447a-8d8c-f5122129b522": {
-          "mountPath": "/var/www/storage"
-        }
-      }
+     "mountPath": "/data"
     }
+   },
+   "haTemplateCode": "redis-ha",
+   "haConversionConfig": {
+    "edge": {
+     "label": "Reverse Proxies",
+     "options": [
+      1,
+      2
+     ],
+     "nodeLabel": "HAProxy",
+     "description": "HAProxy instances routing writes to the primary",
+     "defaultValue": 2
+    },
+    "replica": {
+     "label": "Redis Replicas",
+     "options": [
+      2,
+      3,
+      4,
+      5
+     ],
+     "nodeLabel": "Redis",
+     "description": "Nodes running Redis + colocated Sentinel",
+     "defaultValue": 2
+    },
+    "internal": null,
+    "description": "This will convert your Redis instance to an HA cluster with Sentinel failover and HAProxy routing to the primary."
+   }
+  },
+  "e3f870a4-826e-4811-b36a-a9e264339bf9": {
+   "icon": "https://www.mysql.com/common/logos/logo-mysql-170x115.png",
+   "name": "mysql",
+   "deploy": {
+    "startCommand": "docker-entrypoint.sh mysqld --datadir=/var/lib/mysql/data --performance-schema=OFF --skip-log-bin --innodb-buffer-pool-size=64M",
+    "healthcheckPath": null,
+    "restartPolicyType": "ON_FAILURE",
+    "restartPolicyMaxRetries": 10
+   },
+   "source": {
+    "image": "mysql:8"
+   },
+   "variables": {
+    "MYSQL_USER": {
+     "isOptional": false,
+     "description": "Don't change.",
+     "defaultValue": "pixelfed"
+    },
+    "MYSQL_DATABASE": {
+     "isOptional": false,
+     "description": "Don't change.",
+     "defaultValue": "pixelfed"
+    },
+    "MYSQL_PASSWORD": {
+     "isOptional": false,
+     "description": "Database password. Auto generated.",
+     "defaultValue": "${{secret(32)}}"
+    },
+    "MYSQL_RANDOM_ROOT_PASSWORD": {
+     "isOptional": false,
+     "description": "Don't change.",
+     "defaultValue": "1"
+    }
+   },
+   "volumeMounts": {
+    "e3f870a4-826e-4811-b36a-a9e264339bf9": {
+     "mountPath": "/var/lib/mysql"
+    }
+   },
+   "haTemplateCode": "mysql-ha",
+   "haConversionConfig": {
+    "edge": {
+     "label": "Reverse Proxies",
+     "options": [
+      1,
+      2
+     ],
+     "nodeLabel": "HAProxy",
+     "description": "HAProxy instances routing writes to the primary",
+     "defaultValue": 2
+    },
+    "replica": {
+     "label": "MySQL Replicas",
+     "options": [
+      2,
+      4,
+      6,
+      8
+     ],
+     "nodeLabel": "MySQL",
+     "description": "Requires odd count for quorum",
+     "defaultValue": 2
+    },
+    "internal": null,
+    "description": "This will convert your MySQL instance to an HA cluster with Group Replication failover and HAProxy routing to the primary.",
+    "supportedImageMajorVersions": [
+     8,
+     9
+    ]
+   }
+  },
+  "fb1747fb-6f8e-447a-8d8c-f5122129b522": {
+   "icon": "https://raw.githubusercontent.com/pixelfed/pixelfed/dev/public/img/favicon.png",
+   "name": "pixelfed",
+   "deploy": {
+    "startCommand": null,
+    "healthcheckPath": "/api/v1/instance",
+    "restartPolicyType": "ON_FAILURE",
+    "healthcheckTimeout": 600,
+    "restartPolicyMaxRetries": 10
+   },
+   "source": {
+    "repo": "https://github.com/two-workspaces/pixelfed",
+    "rootDirectory": null
+   },
+   "variables": {
+    "PORT": {
+     "isOptional": false,
+     "description": "Port for Railway healthcheck probing. Do not change.",
+     "defaultValue": "80"
+    },
+    "APP_ENV": {
+     "isOptional": false,
+     "description": "Don't change.",
+     "defaultValue": "production"
+    },
+    "APP_URL": {
+     "isOptional": false,
+     "description": "Wired automatically. Don't change.",
+     "defaultValue": "https://${{RAILWAY_PUBLIC_DOMAIN}}"
+    },
+    "DB_HOST": {
+     "isOptional": false,
+     "description": "Wired automatically. Don't change.",
+     "defaultValue": "${{mysql.RAILWAY_PRIVATE_DOMAIN}}"
+    },
+    "DB_PORT": {
+     "isOptional": false,
+     "description": "Don't change.",
+     "defaultValue": "3306"
+    },
+    "APP_NAME": {
+     "isOptional": false,
+     "description": "Instance name shown in the UI and metadata.",
+     "defaultValue": "Pixelfed"
+    },
+    "APP_DEBUG": {
+     "isOptional": false,
+     "description": "Don't change.",
+     "defaultValue": "false"
+    },
+    "APP_DOMAIN": {
+     "isOptional": false,
+     "description": "Wired automatically. Don't change. Federation identities are tied to this domain \u2014 attach your custom domain BEFORE federating.",
+     "defaultValue": "${{RAILWAY_PUBLIC_DOMAIN}}"
+    },
+    "REDIS_HOST": {
+     "isOptional": false,
+     "description": "Wired automatically. Don't change.",
+     "defaultValue": "${{redis.RAILWAY_PRIVATE_DOMAIN}}"
+    },
+    "REDIS_PORT": {
+     "isOptional": false,
+     "description": "Don't change.",
+     "defaultValue": "6379"
+    },
+    "DB_DATABASE": {
+     "isOptional": false,
+     "description": "Wired automatically. Don't change.",
+     "defaultValue": "${{mysql.MYSQL_DATABASE}}"
+    },
+    "DB_PASSWORD": {
+     "isOptional": false,
+     "description": "Wired automatically. Don't change.",
+     "defaultValue": "${{mysql.MYSQL_PASSWORD}}"
+    },
+    "DB_USERNAME": {
+     "isOptional": false,
+     "description": "Wired automatically. Don't change.",
+     "defaultValue": "${{mysql.MYSQL_USER}}"
+    },
+    "LOG_CHANNEL": {
+     "isOptional": false,
+     "description": "Logs go to Railway's log view.",
+     "defaultValue": "stderr"
+    },
+    "MAIL_DRIVER": {
+     "isOptional": false,
+     "description": "Set to smtp (with MAIL_HOST/PORT/USERNAME/PASSWORD/ENCRYPTION/FROM_ADDRESS) for real emails.",
+     "defaultValue": "log"
+    },
+    "ACTIVITY_PUB": {
+     "isOptional": false,
+     "description": "ActivityPub federation with Mastodon & the Fediverse.",
+     "defaultValue": "true"
+    },
+    "ADMIN_DOMAIN": {
+     "isOptional": false,
+     "description": "Wired automatically. Don't change.",
+     "defaultValue": "${{RAILWAY_PUBLIC_DOMAIN}}"
+    },
+    "CACHE_DRIVER": {
+     "isOptional": false,
+     "description": "Don't change.",
+     "defaultValue": "redis"
+    },
+    "PF_MAX_USERS": {
+     "isOptional": false,
+     "description": "Maximum number of accounts on this instance.",
+     "defaultValue": "1000"
+    },
+    "QUEUE_DRIVER": {
+     "isOptional": false,
+     "description": "Don't change.",
+     "defaultValue": "redis"
+    },
+    "REDIS_CLIENT": {
+     "isOptional": false,
+     "description": "Don't change.",
+     "defaultValue": "phpredis"
+    },
+    "DB_CONNECTION": {
+     "isOptional": false,
+     "description": "Don't change.",
+     "defaultValue": "mysql"
+    },
+    "OAUTH_ENABLED": {
+     "isOptional": false,
+     "description": "Required for mobile/third-party apps.",
+     "defaultValue": "true"
+    },
+    "PF_MAKE_ADMIN": {
+     "isOptional": false,
+     "description": "After registering in the web UI, set this to your username and redeploy \u2014 that account becomes admin.",
+     "defaultValue": ""
+    },
+    "TRUST_PROXIES": {
+     "isOptional": false,
+     "description": "Don't change \u2014 Railway terminates TLS in front of the app.",
+     "defaultValue": "*"
+    },
+    "HORIZON_PREFIX": {
+     "isOptional": false,
+     "description": "Don't change.",
+     "defaultValue": "horizon-"
+    },
+    "MAX_PHOTO_SIZE": {
+     "isOptional": false,
+     "description": "Max photo/video size in KB.",
+     "defaultValue": "15000"
+    },
+    "SESSION_DOMAIN": {
+     "isOptional": false,
+     "description": "Wired automatically. Don't change.",
+     "defaultValue": "${{RAILWAY_PUBLIC_DOMAIN}}"
+    },
+    "SESSION_DRIVER": {
+     "isOptional": false,
+     "description": "Don't change.",
+     "defaultValue": "database"
+    },
+    "AP_REMOTE_FOLLOW": {
+     "isOptional": false,
+     "description": "Allow remote follows from other Fediverse servers.",
+     "defaultValue": "true"
+    },
+    "BROADCAST_DRIVER": {
+     "isOptional": false,
+     "description": "Don't change.",
+     "defaultValue": "log"
+    },
+    "OPEN_REGISTRATION": {
+     "isOptional": false,
+     "description": "Anyone can sign up. Set false after creating your account for a private instance.",
+     "defaultValue": "true"
+    },
+    "ENABLE_CONFIG_CACHE": {
+     "isOptional": false,
+     "description": "Don't change.",
+     "defaultValue": "true"
+    },
+    "ENFORCE_EMAIL_VERIFICATION": {
+     "isOptional": false,
+     "description": "Keep false unless you configure a real mailer (MAIL_* vars).",
+     "defaultValue": "false"
+    },
+    "RAILWAY_HEALTHCHECK_TIMEOUT_SEC": {
+     "isOptional": false,
+     "description": "How long the first boot may take before the healthcheck gives up. Small plans start this image slowly, so allow 10 minutes. Do not change.",
+     "defaultValue": "600"
+    }
+   },
+   "networking": {
+    "serviceDomains": {
+     "<hasDomain>:80": {
+      "port": 80
+     }
+    }
+   },
+   "volumeMounts": {
+    "fb1747fb-6f8e-447a-8d8c-f5122129b522": {
+     "mountPath": "/var/www/storage"
+    }
+   }
   }
+ }
 }

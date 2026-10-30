@@ -1,4 +1,4 @@
-FROM ghcr.io/jippi/docker-pixelfed:v0.15.0-nginx-8.4-bookworm
+FROM ghcr.io/jippi/docker-pixelfed:v0.15.2-nginx-8.4-bookworm
 
 # Combined single-service image for Railway: nginx + php-fpm + horizon (queues)
 # + scheduler in one container sharing one storage volume — Railway volumes
