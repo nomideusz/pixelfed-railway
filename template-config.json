@@ -129,8 +129,7 @@
     "restartPolicyMaxRetries": 10
    },
    "source": {
-    "repo": "https://github.com/two-workspaces/pixelfed",
-    "rootDirectory": null
+    "image": "ghcr.io/two-workspaces/pixelfed:65ab1b3"
    },
    "variables": {
     "PORT": {
